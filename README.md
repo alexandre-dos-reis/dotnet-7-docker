@@ -1,4 +1,4 @@
-# dotnet 7 docker
+# dotnet 7 dockerize starter
 
 ## Resources
 
