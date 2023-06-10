@@ -1,4 +1,4 @@
-# DOTNET 7 DOCKER
+# dotnet 7 docker
 
 ## Resources
 

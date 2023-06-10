@@ -3,21 +3,22 @@ version: "3"
 silent: true
 
 vars:
-  DOCKER_IMAGE_DOTNET_SDK: mcr.microsoft.com/dotnet/sdk:7.0
-  DOTNET_DEV_ENV_VARS: ASPNETCORE_URLS=http://+:80 -e ASPNETCORE_ENVIRONMENT=Development
-  DOCKER_RUN_DOTNET_CLI: docker run -it --rm -p 8000:80 -v $(PWD):/app -w /app -e {{.DOTNET_DEV_ENV_VARS}}
+  DOTNET_SDK_IMAGE: mcr.microsoft.com/dotnet/sdk:7.0
+  DOCKER_RUN: docker run -it --rm -p 8000:80 -v $(PWD):/app -w /app
+  DOCKER_RELEASE_IMAGE: dotnet-app
 
 tasks:
   dev:
     cmds:
-      - "{{.DOCKER_RUN_DOTNET_CLI}} {{.DOCKER_IMAGE_DOTNET_SDK}} dotnet watch run --no-launch-profile"
+      - "{{.DOCKER_RUN}} {{.DOTNET_SDK_IMAGE}} dotnet watch run --launch-profile dev"
 
-  build:
+  preview:
     cmds:
-      - "{{.DOCKER_RUN_DOTNET_CLI}} {{.DOCKER_IMAGE_DOTNET_SDK}} dotnet build --no-launch-profile"
+      - docker build . -t {{.DOCKER_RELEASE_IMAGE}}:latest
+      - docker run -it --rm -p 8080:80 -e ASPNETCORE_URLS=http://+80 {{.DOCKER_RELEASE_IMAGE}}
 
   cli:
     cmds:
       # Create a project with: task cli -- new web
       # Any other command with: task cli -- ...
-      - "{{.DOCKER_RUN_DOTNET_CLI}} {{.DOCKER_IMAGE_DOTNET_SDK}} dotnet {{.CLI_ARGS}}"
+      - "{{.DOCKER_RUN}} {{.DOTNET_SDK_IMAGE}} dotnet {{.CLI_ARGS}}"
