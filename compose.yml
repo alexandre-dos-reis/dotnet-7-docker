@@ -1,0 +1,19 @@
+services:
+  dotnet-dev:
+    container_name: dotnet-dev
+    image: "mcr.microsoft.com/dotnet/sdk:7.0"
+    working_dir: /app
+    command: dotnet watch run --launch-profile dev
+    ports:
+      - 8000:80
+    volumes:
+      - .:/app
+
+  dotnet-formatter:
+    container_name: dotnet-formatter
+    working_dir: /app
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.formatter
+    volumes:
+      - .:/app

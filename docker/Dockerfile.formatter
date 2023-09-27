@@ -1,0 +1,10 @@
+ARG  IMAGE="mcr.microsoft.com/dotnet/sdk"
+ARG  TAG="7.0"
+
+FROM ${IMAGE}:${TAG} as BUILD
+RUN apt update
+RUN apt install nodejs npm -y
+RUN npm install -g chokidar-cli
+RUN dotnet tool install csharpier -g
+ENV SHELL=sh
+ENTRYPOINT ["chokidar", "**/*.cs", "-c", "dotnet csharpier ."]
